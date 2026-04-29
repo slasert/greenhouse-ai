@@ -2,6 +2,7 @@ import sys, os, base64
 sys.path.insert(0, os.path.dirname(__file__))
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
@@ -9,7 +10,7 @@ from plotly.subplots import make_subplots
 from agent import GreenhouseAgent
 
 st.set_page_config(page_title="Smart Green House Artificial Intelligence", page_icon="🌿",
-                   layout="wide", initial_sidebar_state="expanded")
+                layout="wide", initial_sidebar_state="expanded")
 
 def img64(filename):
     path = os.path.join(os.path.dirname(__file__), "images", filename)
@@ -236,6 +237,105 @@ div[data-testid="stDataFrame"] {
 .stSuccess { background: #f0faf4 !important; color: #2d7a4f !important; border: 1px solid #c8dfc4 !important; }
 </style>
 """, unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Custom leaf button — sidebar kapalıyken sol üstte beliren özel yaprak rozeti.
+# Streamlit'in kendi "open sidebar" kontrolünü JS ile programatik olarak tetikler.
+# ══════════════════════════════════════════════════════════════════════════════
+components.html("""
+<script>
+(function () {
+  const pdoc = window.parent.document;
+  const BTN_ID = 'greenhouse-leaf-sidebar-btn';
+
+  const old = pdoc.getElementById(BTN_ID);
+  if (old) old.remove();
+
+  const btn = pdoc.createElement('button');
+  btn.id = BTN_ID;
+  btn.type = 'button';
+  btn.title = 'Sidebar\\'ı Aç';
+  btn.innerHTML = `
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M20.5 3.5c-1.6 1.5-3.1 3-4.5 4C7 9.5 4.9 15.7 2.8 21l1.9.7 1-2.3c.5.1 1 .2 1.5.2 11 0 14-7 14-13.9 0-1-.05-2-.16-3
+               M9 14c2.5-3 5-5 8-7" stroke="white" stroke-width="1.6"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M20.5 3.5c-1.6 1.5-3.1 3-4.5 4C7 9.5 4.9 15.7 2.8 21l1.9.7 1-2.3c.5.1 1 .2 1.5.2 11 0 14-7 14-13.9 0-1-.05-2-.16-3z"
+            fill="rgba(255,255,255,0.18)"/>
+    </svg>`;
+  btn.style.cssText = `
+    position: fixed; top: 14px; left: 14px;
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2d7a4f 0%, #1e6040 100%);
+    border: 1.5px solid #4a9e6a;
+    box-shadow: 0 6px 22px rgba(45,122,79,0.40),
+                0 0 0 4px rgba(45,122,79,0.08);
+    cursor: pointer;
+    z-index: 2147483647;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 0;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    animation: ghLeafPulse 2.4s ease-in-out infinite;
+  `;
+
+  if (!pdoc.getElementById('gh-leaf-pulse-style')) {
+    const s = pdoc.createElement('style');
+    s.id = 'gh-leaf-pulse-style';
+    s.textContent = `
+      @keyframes ghLeafPulse {
+        0%,100% { box-shadow: 0 6px 22px rgba(45,122,79,0.40),
+                              0 0 0 4px  rgba(45,122,79,0.08); }
+        50%     { box-shadow: 0 6px 22px rgba(45,122,79,0.55),
+                              0 0 0 10px rgba(45,122,79,0.00); }
+      }`;
+    pdoc.head.appendChild(s);
+  }
+
+  btn.addEventListener('mouseenter', () => {
+    btn.style.transform = 'translateY(-2px) scale(1.06)';
+    btn.style.background = 'linear-gradient(135deg,#34925e 0%,#226e48 100%)';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'none';
+    btn.style.background = 'linear-gradient(135deg,#2d7a4f 0%,#1e6040 100%)';
+  });
+
+  btn.addEventListener('click', () => {
+    const selectors = [
+      '[data-testid="stSidebarCollapsedControl"] button',
+      '[data-testid="stSidebarCollapsedControl"]',
+      '[data-testid="collapsedControl"] button',
+      '[data-testid="collapsedControl"]',
+      'button[aria-label="Open sidebar"]',
+      'button[kind="headerNoPadding"]',
+      'button[kind="header"]'
+    ];
+    for (const s of selectors) {
+      const el = pdoc.querySelector(s);
+      if (el) { el.click(); break; }
+    }
+  });
+
+  pdoc.body.appendChild(btn);
+
+  const updateVisibility = () => {
+    const sidebar = pdoc.querySelector('section[data-testid="stSidebar"]');
+    let open = false;
+    if (sidebar) {
+      const aria = sidebar.getAttribute('aria-expanded');
+      const w = sidebar.getBoundingClientRect().width;
+      open = aria === 'true' || w > 50;
+    }
+    btn.style.display = open ? 'none' : 'flex';
+  };
+  updateVisibility();
+  setInterval(updateVisibility, 250);
+})();
+</script>
+""", height=0)
 
 # ── Labels & Maps ─────────────────────────────────────────────────────────────
 FACT_LABELS = {
