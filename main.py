@@ -54,19 +54,43 @@ header[data-testid="stHeader"] {
 #MainMenu                  { visibility: hidden !important; }
 footer                     { display: none !important; }
 
-/* ── Keep sidebar collapse/expand button visible & clickable ── */
+/* ── Sidebar collapse/expand button: force visible in all Streamlit versions ── */
 [data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
 [data-testid="stSidebarCollapseButton"],
-button[kind="header"] {
+[data-testid="baseButton-headerNoPadding"],
+button[kind="headerNoPadding"],
+button[kind="header"],
+[aria-label="Open sidebar"],
+[aria-label="Close sidebar"] {
+    display: flex !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     visibility: visible !important;
     z-index: 999999 !important;
 }
+
+/* Pin the collapsed-state button to a fixed corner so it's always reachable */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"] {
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    background: #ffffff !important;
+    border: 1px solid #c8dfc4 !important;
+    border-radius: 10px !important;
+    padding: 6px 8px !important;
+    box-shadow: 0 4px 14px rgba(45,122,79,0.20) !important;
+}
 [data-testid="stSidebarCollapsedControl"] svg,
-[data-testid="stSidebarCollapseButton"] svg {
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapseButton"] svg,
+button[kind="header"] svg,
+button[kind="headerNoPadding"] svg {
     color: #2d7a4f !important;
     fill: #2d7a4f !important;
+    width: 22px !important;
+    height: 22px !important;
 }
 
 /* ── Sidebar: warm cream / linen ── */
