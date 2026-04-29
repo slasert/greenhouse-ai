@@ -70,27 +70,108 @@ button[kind="header"],
     z-index: 999999 !important;
 }
 
-/* Pin the collapsed-state button to a fixed corner so it's always reachable */
+/* ══════════════════════════════════════════════════════════════════════════════
+   Re-open Sidebar Button — sidebar kapatıldığında sol üstte beliren yeşil yaprak rozeti
+   (header'daki 🌿 rozetine stilistik olarak eşleşir)
+   ══════════════════════════════════════════════════════════════════════════════ */
 [data-testid="stSidebarCollapsedControl"],
 [data-testid="collapsedControl"] {
     position: fixed !important;
-    top: 12px !important;
-    left: 12px !important;
-    background: #ffffff !important;
-    border: 1px solid #c8dfc4 !important;
-    border-radius: 10px !important;
-    padding: 6px 8px !important;
-    box-shadow: 0 4px 14px rgba(45,122,79,0.20) !important;
+    top: 16px !important;
+    left: 16px !important;
+    width: 46px !important;
+    height: 46px !important;
+    padding: 0 !important;
+    background: linear-gradient(135deg, #2d7a4f 0%, #1e6040 100%) !important;
+    border: 1.5px solid #4a9e6a !important;
+    border-radius: 14px !important;
+    box-shadow: 0 6px 22px rgba(45,122,79,0.40),
+                0 0 0 4px rgba(45,122,79,0.08) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: transform .18s ease, box-shadow .18s ease,
+                background .18s ease !important;
+    animation: sb-pulse 2.4s ease-in-out infinite;
 }
+
+[data-testid="stSidebarCollapsedControl"]:hover,
+[data-testid="collapsedControl"]:hover {
+    transform: translateY(-2px) scale(1.06) !important;
+    background: linear-gradient(135deg, #34925e 0%, #226e48 100%) !important;
+    box-shadow: 0 10px 28px rgba(45,122,79,0.55),
+                0 0 0 6px rgba(45,122,79,0.14) !important;
+}
+
+[data-testid="stSidebarCollapsedControl"]:active,
+[data-testid="collapsedControl"]:active {
+    transform: translateY(0) scale(.98) !important;
+}
+
+/* Streamlit'in default oklarını/svg ikonunu beyaz, kalın bir okla değiştir */
 [data-testid="stSidebarCollapsedControl"] svg,
 [data-testid="collapsedControl"] svg,
 [data-testid="stSidebarCollapseButton"] svg,
 button[kind="header"] svg,
 button[kind="headerNoPadding"] svg {
-    color: #2d7a4f !important;
-    fill: #2d7a4f !important;
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+    stroke-width: 2.4px !important;
     width: 22px !important;
     height: 22px !important;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.25));
+}
+
+/* Açma/kapama butonu sidebar açıkken de yumuşak görünsün */
+[data-testid="stSidebarCollapseButton"] {
+    background: rgba(45,122,79,0.10) !important;
+    border-radius: 10px !important;
+    padding: 6px !important;
+}
+[data-testid="stSidebarCollapseButton"]:hover {
+    background: rgba(45,122,79,0.20) !important;
+}
+[data-testid="stSidebarCollapseButton"] svg {
+    color: #2d7a4f !important;
+    fill: #2d7a4f !important;
+    stroke: #2d7a4f !important;
+}
+
+/* Hafif nabız animasyonu — kullanıcı butonu fark etsin diye */
+@keyframes sb-pulse {
+    0%, 100% { box-shadow: 0 6px 22px rgba(45,122,79,0.40),
+                            0 0 0 4px  rgba(45,122,79,0.08); }
+    50%      { box-shadow: 0 6px 22px rgba(45,122,79,0.55),
+                            0 0 0 10px rgba(45,122,79,0.00); }
+}
+
+/* "Open sidebar" tooltip — buton üstüne gelince ipucu metni */
+[data-testid="stSidebarCollapsedControl"]::after,
+[data-testid="collapsedControl"]::after {
+    content: "Open sidebar";
+    position: absolute;
+    left: 56px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-6px);
+    background: #1a3a24;
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .4px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+}
+[data-testid="stSidebarCollapsedControl"]:hover::after,
+[data-testid="collapsedControl"]:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
 }
 
 /* ── Sidebar: warm cream / linen ── */
