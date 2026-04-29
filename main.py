@@ -49,11 +49,25 @@ header[data-testid="stHeader"] {
     border-bottom: none !important;
     box-shadow: none !important;
 }
-header[data-testid="stHeader"] * { opacity: 0 !important; pointer-events: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
 .stDeployButton            { display: none !important; }
 #MainMenu                  { visibility: hidden !important; }
 footer                     { display: none !important; }
+
+/* ── Keep sidebar collapse/expand button visible & clickable ── */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapseButton"],
+button[kind="header"] {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    z-index: 999999 !important;
+}
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarCollapseButton"] svg {
+    color: #2d7a4f !important;
+    fill: #2d7a4f !important;
+}
 
 /* ── Sidebar: warm cream / linen ── */
 section[data-testid="stSidebar"] > div {
