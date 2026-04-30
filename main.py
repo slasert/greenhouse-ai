@@ -545,8 +545,10 @@ with st.sidebar:
     </div>""", unsafe_allow_html=True)
 
 if step_btn:  run_step()
-if run10_btn: [run_step() for _ in range(10)]
-if run50_btn: [run_step() for _ in range(50)]
+if run10_btn:
+    for _ in range(10): run_step()
+if run50_btn:
+    for _ in range(50): run_step()
 if optimize_btn:
     with st.spinner("Growing the optimal schedule… 🌱"):
         st.session_state.optimization_result = agent.optimize_schedule()
